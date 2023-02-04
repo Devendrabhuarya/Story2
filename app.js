@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require("express");
 const ejs = require('ejs');
 const bodyParser = require('body-parser');
@@ -11,6 +13,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
+console.log(process.env.API_KEY);
 app.set('view engine', 'ejs');
 mongoose.connect("mongodb://0.0.0.0:27017/userDB", { useNewUrlParser: true }).then(() => {
     console.log("connected");
@@ -22,9 +25,9 @@ const userSchema = new mongoose.Schema({
     password: String
 })
 
-const secret = "Thisisourlittlesecret.";
+
 // encrpt we called save and descrpyt we call find
-userSchema.plugin(encrypt, { secret: secret, encryptedFields: ["password"] });
+userSchema.plugin(encrypt, { secret: process.env.SECRET, encryptedFields: ["password"] });
 
 const User = mongoose.model("User", userSchema);
 
